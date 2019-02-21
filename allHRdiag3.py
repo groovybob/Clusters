@@ -23,7 +23,6 @@ with open("C:/Users/User/GITHUB/Clusters/clusters.csv") as csvDataFile:
 
 #  creates a function that plots BP-RP against Magnitude in G band
 
-
 def plotHRdiag(r):
     targetx = r['pmdec']
     meanx = targetx.mean()
@@ -31,11 +30,10 @@ def plotHRdiag(r):
     targety = r['pmra']
     meany = targety.mean()
     sdy = targety.std()
-    selected_r = r[(targetx > meanx - sdx) & (targetx < meanx + sdx) & (targety > meany - sdy) & (targety < meany + sdx)]
-    variables = r[(r['phot_variable_flag'] == b'VARIABLE')]
+    selected_r = r[(targetx > meanx - sdx) & (targetx < meanx + sdx) & (targety > meany - sdy) & (targety < meany + sdx) ]
     fig, ax = plt.subplots(figsize=(8, 10))
     ax.set_xlim(-0.5, 4)
-    ax.set_ylim(21.2, 10)
+    ax.set_ylim(17, 0)
     ax.grid()
     ax.set_title(f'H-R Diagram for {str(targets[i])}.\n (Gaia Dataset II)')
     ax.title.set_fontsize(20)
@@ -43,13 +41,12 @@ def plotHRdiag(r):
     ax.xaxis.label.set_fontsize(20)
     ax.set_ylabel('Mean magnitude in the G band')
     ax.yaxis.label.set_fontsize(20)
-    textstr = f"Number of stars {len(selected_r['bp_rp'])}\nBlack + = variable stars"
+    textstr = f"Number of stars {len(selected_r['bp_rp'])}"
     props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
     t = selected_r['bp_rp']
     ax.text(0.05, 0.95, textstr, transform=ax.transAxes, fontsize=14,
             verticalalignment='top', bbox=props)
-    ax.scatter(selected_r['bp_rp'], selected_r['phot_g_mean_mag'],s=1, edgecolors='none',vmin=-1., vmax=4., c=t, cmap='jet')
-    ax.scatter(variables['bp_rp'], variables['phot_g_mean_mag'],s=5, marker = 'x',color = 'k')
+    ax.scatter(selected_r['bp_rp'], selected_r['lum_val'],s=1, edgecolors='none',vmin=-1., vmax=4., c=t, cmap = 'jet')
     fig.patch.set_facecolor('dimgray')
     ax.set_facecolor('dimgray')
     ax.tick_params(axis='both', labelsize=14)
@@ -58,7 +55,6 @@ def plotHRdiag(r):
 
 #  function to get target RA DEC for each target
 #  uses the RA DEC (conerted to decimal degrees) to get the desired data from Gaia database
-
 
 def generate_r(target):
     target = str(targets[i])
@@ -80,7 +76,6 @@ def generate_r(target):
 
 #  loops over each target to download data, plot and save image. I recommend you use your own directory adresses.
 
-
 for i in range(len(targets)):
     size = str(sizes[i])
     if not os.path.isfile(f'C:/Users/User/GITHUB/Clusters/HRdiags/H-R Diagram for {str(targets[i])}.png'):
@@ -95,4 +90,5 @@ for i in range(len(targets)):
 
     else:
         print("skipping " + str(targets[i]) )
+
 

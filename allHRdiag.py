@@ -1,3 +1,5 @@
+#  this script creates HR diagrams for all stars in 0.5geg of each cluster including foreground stars
+
 import astropy.units as u
 import gzip
 from astropy.coordinates.sky_coordinate import SkyCoord
@@ -59,7 +61,7 @@ def generate_r(target):
     Ra = str(c.ra.degree)
     Dec = str(c.dec.degree)
     string2 = str(Ra+","+Dec)
-    bigstring = str("SELECT all source_id,ra,ra_error,dec,dec_error,parallax,parallax_error,phot_g_mean_mag,bp_rp,radial_velocity,radial_velocity_error,phot_variable_flag,teff_val,a_g_val FROM gaiadr2.gaia_source  WHERE CONTAINS(POINT('ICRS',gaiadr2.gaia_source.ra,gaiadr2.gaia_source.dec),CIRCLE('ICRS',"+string2+",0.5))=1")
+    bigstring = str("SELECT all gaia_source.source_id,gaia_source.ra,gaia_source.ra_error,gaia_source.dec,gaia_source.dec_error,gaia_source.parallax,gaia_source.parallax_error,gaia_source.pmra,gaia_source.pmra_error,gaia_source.pmdec,gaia_source.pmdec_error,gaia_source.phot_g_mean_mag,gaia_source.phot_bp_mean_mag,gaia_source.phot_rp_mean_mag,gaia_source.bp_rp,gaia_source.bp_g,gaia_source.g_rp,gaia_source.radial_velocity,gaia_source.radial_velocity_error,gaia_source.teff_val,gaia_source.a_g_val,gaia_source.lum_val,gaia_source.lum_percentile_lower,gaia_source.lum_percentile_upper  FROM gaiadr2.gaia_source  WHERE CONTAINS(POINT('ICRS',gaiadr2.gaia_source.ra,gaiadr2.gaia_source.dec),CIRCLE('ICRS',"+string2+",0.5))=1")
     job = Gaia.launch_job_async(bigstring, dump_to_file=True)
     r = job.get_results()
     return r
@@ -74,3 +76,6 @@ for target in targets:
     for item in test:
         if item.endswith(".vot"):
             os.remove(os.path.join(dir_name, item))
+
+
+
